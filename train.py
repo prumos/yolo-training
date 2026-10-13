@@ -1,5 +1,6 @@
 import ultralytics
 
+
 def train():
     model = ultralytics.YOLO("yolo26s.pt")
     model.train(
@@ -13,7 +14,18 @@ def train():
         name="ctafor_01_exp01",
         mosaic=0.5,
     )
-    return 0
+
+
+def _run():
+    try:
+        train()
+        return 0
+    except Exception:
+        import traceback
+
+        traceback.print_exc()
+        return 1
+
 
 if __name__ == "__main__":
-    raise SystemExit(train())
+    raise SystemExit(_run())
