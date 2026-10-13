@@ -1,0 +1,5 @@
+# Change according to your CUDA target version
+--index-url https://download.pytorch.org/whl/cu132
+
+torch
+torchvision
