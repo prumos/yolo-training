@@ -1,2 +1,7 @@
+# Python
+venv/
+__pycache__/
+
+# Datasets and experiment runs
 datasets/
 runs/
