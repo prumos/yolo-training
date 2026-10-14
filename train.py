@@ -5,21 +5,29 @@ def train():
     model = YOLO("./weights/yolo26s.pt")
     model.train(
         data="./datasets/ctafor_01/ctafor_01.yaml",
-        epochs=300,
         batch=16,
+        epochs=300,
         imgsz=896,
-        cache=True,
-        cls_pw=1.0,
-        save_period=30,
-        name="ctafor_01_exp",
-        exist_ok=False,
         device=0,
+        cache=True,
+        patience=0,
         workers=4,
+        # Optim
+        optimizer="AdamW",
+        cos_lr=True,
+        lr0=0.005,
+        lrf=0.01,
+        # Loss
+        cls_pw=0.5,
         # Augmentations
-        close_mosaic=100,
+        close_mosaic=50,
         degrees=20,
         scale=(0.9, 1.5),
         shear=10,
+        # Project
+        save_period=50,
+        name="ctafor_01_exp",
+        exist_ok=False,
     )
 
 
