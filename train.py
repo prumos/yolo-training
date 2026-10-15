@@ -13,10 +13,10 @@ def train():
         patience=0,
         workers=4,
         # Optim
-        optimizer="AdamW",
-        cos_lr=True,
-        lr0=0.005,
-        lrf=0.01,
+        # optimizer="AdamW",
+        # cos_lr=True,
+        # lr0=0.005,
+        # lrf=0.01,
         # Loss
         cls_pw=0.5,
         # Augmentations
