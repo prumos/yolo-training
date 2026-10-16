@@ -2,10 +2,10 @@ from ultralytics import YOLO
 
 
 def train():
-    model = YOLO("./weights/yolo26s.pt")
+    model = YOLO("./weights/yolo26m.pt")
     model.train(
         data="./datasets/ctafor_01/ctafor_01.yaml",
-        batch=16,
+        batch=8,
         epochs=300,
         imgsz=896,
         device=0,
@@ -13,7 +13,7 @@ def train():
         patience=0,
         workers=4,
         # Loss
-        cls_pw=1.0,
+        cls_pw=0.5,
         # Augmentations
         close_mosaic=50,
         degrees=20,
