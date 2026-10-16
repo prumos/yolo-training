@@ -12,13 +12,8 @@ def train():
         cache=True,
         patience=0,
         workers=4,
-        # Optim
-        # optimizer="AdamW",
-        # cos_lr=True,
-        # lr0=0.005,
-        # lrf=0.01,
         # Loss
-        cls_pw=0.5,
+        cls_pw=1.0,
         # Augmentations
         close_mosaic=50,
         degrees=20,
