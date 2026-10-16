@@ -18,7 +18,7 @@ def train():
         # lr0=0.005,
         # lrf=0.01,
         # Loss
-        # cls_pw=0.5,
+        cls_pw=0.5,
         # Augmentations
         close_mosaic=50,
         degrees=20,
