@@ -22,6 +22,7 @@ def train():
         # Project
         save_period=50,
         name="ctafor_01_exp",
+        project="train",
         exist_ok=False,
     )
 
