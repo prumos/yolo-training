@@ -1,24 +1,25 @@
+import argparse
 from pathlib import Path
 
 import pandas as pd
 from ultralytics import YOLO
 
 
-def eval():
-    val_df = {}
+def eval(dataset: str, split: str = "val"):
+    results = {}
     metric_col = None
     runs_dir = Path.cwd() / "runs/detect"
-    for exp in sorted((runs_dir / "train").iterdir()):
+    for exp in sorted((runs_dir / f"{dataset}/train").iterdir()):
         if not exp.is_dir():
             continue
         model = YOLO(exp / "weights/best.pt")
         metrics = model.val(
-            data="./datasets/ctafor_01/ctafor_01.yaml",
+            data=f"datasets/{dataset}/{dataset}.yaml",
             conf=0.25,
-            split="val",
+            split=split,
             batch=8,
-            project="val",
             name=exp.name,
+            project=f"{dataset}/{split}",
             exist_ok=True,
             device="cuda:0",
             verbose=False,
@@ -34,30 +35,47 @@ def eval():
                 *[f"{cls_name}_map50" for cls_name in classes],
                 *[f"{cls_name}_map50-95" for cls_name in classes],
             ]
-            val_df["metric"] = metric_col
-        val_df[exp.name] = [
+            results["metric"] = metric_col
+        results[exp.name] = [
             metrics.box.map50,
             metrics.box.map75,
             metrics.box.map,
             *metrics.box.ap50,
             *metrics.box.maps,
         ]
-    val_df = pd.DataFrame(data=val_df)
-    val_df["metric"] = val_df["metric"].str.pad(
-        width=max(len(metric) for metric in val_df["metric"]),
+    results = pd.DataFrame(data=results)
+    results["metric"] = results["metric"].str.pad(
+        width=max(len(metric) for metric in results["metric"]),
     )
-    val_df.to_csv(
-        runs_dir / "val/experiments_val.csv",
+    results.to_csv(
+        runs_dir / f"{dataset}/{split}/results.csv",
         float_format="%.5f",
         header=True,
         index=False,
     )
-    return
+
+
+def _get_argparser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "dataset",
+        type=str,
+        help="Target dataset.",
+    )
+    parser.add_argument(
+        "split",
+        type=str,
+        default="val",
+        help="Which data split to use.",
+    )
+    return parser
 
 
 def _run():
     try:
-        eval()
+        parser = _get_argparser()
+        args = parser.parse_args()
+        eval(args.dataset, args.split)
         return 0
     except Exception:
         import traceback

@@ -1,10 +1,12 @@
+import argparse
+
 from ultralytics import YOLO
 
 
-def train():
-    model = YOLO("./weights/yolo26m.pt")
+def train(dataset: str, model: str = "weights/yolo26m.pt"):
+    model = YOLO(model)
     model.train(
-        data="./datasets/ctafor_01/ctafor_01.yaml",
+        data=f"datasets/{dataset}/{dataset}.yaml",
         batch=8,
         epochs=300,
         imgsz=896,
@@ -21,15 +23,33 @@ def train():
         shear=10,
         # Project
         save_period=50,
-        name="ctafor_01_exp",
-        project="train",
+        name="exp",
+        project=f"{dataset}/train",
         exist_ok=False,
     )
 
 
+def _get_argparser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "dataset",
+        type=str,
+        help="Target dataset.",
+    )
+    parser.add_argument(
+        "model",
+        type=str,
+        default="weights/yolo26m.pt",
+        help="Which YOLO model to use.",
+    )
+    return parser
+
+
 def _run():
     try:
-        train()
+        parser = _get_argparser()
+        args = parser.parse_args()
+        train(args.dataset, args.model)
         return 0
     except Exception:
         import traceback
