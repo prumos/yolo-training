@@ -1,0 +1,36 @@
+task: detect
+mode: train
+
+# Train
+epochs: 200
+patience: 0
+batch: 8
+imgsz: 896
+save: True
+save_period: 50
+cache: True
+device: 0
+workers: 4
+exist_ok: False
+pretrained: True
+close_mosaic: 50
+cls_pw: 0.5
+
+# Val/Test
+val: True
+split: val
+plots: True
+save_json: False
+
+# Augmentations
+hsv_h: 0.05   # (float) HSV hue augmentation fraction
+hsv_s: 0.7    # (float) HSV saturation augmentation fraction
+hsv_v: 0.2    # (float) HSV value (brightness) augmentation fraction
+bgr: 0.0      # (float) RGB↔BGR channel swap probability
+degrees: 10.0        # (float) rotation degrees (+/-)
+translate: 0.1       # (float) translation fraction (+/-)
+scale: 0.1           # (float | tuple) scale gain (+/-) as float, or explicit (min, max) tuple
+shear: 5.0           # (float) shear degrees (+/-)
+perspective: 0.0001  # (float) perspective fraction (0–0.001 typical)
+flipud: 0.0  # (float) vertical flip probability
+fliplr: 0.5  # (float) horizontal flip probability
