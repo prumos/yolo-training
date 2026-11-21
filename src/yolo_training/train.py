@@ -40,6 +40,7 @@ def _get_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "model",
         type=str,
+        nargs="?",
         default="yolo26m.pt",
         help="Which YOLO model to use.",
     )

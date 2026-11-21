@@ -65,6 +65,7 @@ def _get_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "split",
         type=str,
+        nargs="?",
         default="val",
         choices=["train", "val", "test"],
         help="Which data split to use.",
