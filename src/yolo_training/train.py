@@ -4,7 +4,7 @@ from pathlib import Path
 from ultralytics import YOLO
 
 
-def train(dataset: Path, model: str = "weights/yolo26m.pt") -> None:
+def train(dataset: Path, model: str = "yolo26m.pt") -> None:
     model = YOLO(model)
     model.train(
         data=(dataset / f"{dataset.name}.yaml"),
@@ -40,7 +40,7 @@ def _get_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "model",
         type=str,
-        default="weights/yolo26m.pt",
+        default="yolo26m.pt",
         help="Which YOLO model to use.",
     )
     return parser
