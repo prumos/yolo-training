@@ -1,12 +1,13 @@
 import argparse
+from pathlib import Path
 
 from ultralytics import YOLO
 
 
-def train(dataset: str, model: str = "weights/yolo26m.pt"):
+def train(dataset: Path, model: str = "weights/yolo26m.pt") -> None:
     model = YOLO(model)
     model.train(
-        data=f"datasets/{dataset}/{dataset}.yaml",
+        data=(dataset / f"{dataset.name}.yaml"),
         batch=8,
         epochs=300,
         imgsz=896,
@@ -24,7 +25,7 @@ def train(dataset: str, model: str = "weights/yolo26m.pt"):
         # Project
         save_period=50,
         name="exp",
-        project=f"{dataset}/train",
+        project=f"{dataset.name}/train",
         exist_ok=False,
     )
 
@@ -45,11 +46,14 @@ def _get_argparser() -> argparse.ArgumentParser:
     return parser
 
 
-def _run():
+def _run() -> int:
     try:
         parser = _get_argparser()
         args = parser.parse_args()
-        train(args.dataset, args.model)
+        dataset = Path(args.dataset).resolve()
+        if not dataset.is_dir():
+            raise ValueError("`dataset` must be a path to a directory.")
+        train(dataset, args.model)
         return 0
     except Exception:
         import traceback
