@@ -5,6 +5,7 @@ __pycache__/
 # Datasets and experiment runs
 datasets/
 runs/detect/
+*.zip
 
 # Ignore downloaded weights
 *.pt*
