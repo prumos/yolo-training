@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+from typing import Any
 
 from ultralytics import YOLO
 
@@ -10,12 +11,14 @@ def train(
     model_str: str,
     cfg_file: str | None = None,
     resume: bool = False,
+    overrides: dict[str, Any] | None = None,
 ) -> None:
+    overrides = {} if overrides is None else overrides
     if resume:
         model = YOLO(
             f"runs/detect/{dataset.name}/train/{run_name}/weights/last.pt"
         )
-        model.train(resume=True)
+        model.train(resume=True, **overrides)
         return
     model = YOLO(model_str)
     model.train(
@@ -23,6 +26,7 @@ def train(
         name=run_name,
         project=f"{dataset.name}/train",
         cfg=cfg_file,
+        **overrides,
     )
 
 
@@ -55,9 +59,34 @@ def _get_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--resume",
         action="store_true",
-        help="Resume training run",
+        help="Resume training run.",
+    )
+    parser.add_argument(
+        "--overrides",
+        nargs="*",
+        default=[],
+        metavar="KEY=VALUE",
+        help=(
+            "Override YOLO training configuration parameters using "
+            "KEY=VALUE pairs. Multiple overrides can be specified "
+            "(e.g., --overrides epochs=100 imgsz=800 batch=16)."
+        ),
     )
     return parser
+
+
+def process_overrides(args: list[str]) -> dict[str, int | float | str]:
+    def convert(value: str) -> int | float | str:
+        for fn in (int, float):
+            try:
+                return fn(value)
+            except ValueError:
+                continue
+        return value
+    return {
+        key: convert(value)
+        for key, value in (item.split("=", 1) for item in args)
+    }
 
 
 def _run() -> int:
@@ -73,6 +102,7 @@ def _run() -> int:
             model_str=args.model,
             cfg_file=args.cfg,
             resume=args.resume,
+            overrides=process_overrides(args.overrides),
         )
         return 0
     except Exception:
